@@ -1,0 +1,22 @@
+requests:
+  - domain: "thebeat.co"
+    queryType: "NS"
+    resolver: 8.8.8.8
+    expectedResponse:
+      - 1.1.1.1
+      - 2.3.3.3
+      - 3.3.3.3
+      - 4.3.3.3
+  - domain: thebeat.co
+    queryType: A
+    expectedResponse:
+      - 127.0.0.1
+  - domain: google.com
+    query: A
+    expectedResponseCode: NOANSWER
+  - domain: rest-api.rest.svc.cluster.local
+    queryType: PTR
+  - domain: rest-workers.rest.svc.cluster.local
+    queryType: PTR
+    expectedResponse:
+      - 10.2.1.0
