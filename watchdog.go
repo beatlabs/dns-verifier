@@ -28,7 +28,6 @@ func newWatchdogWorker(d *dnsStream) *watchdogWorker {
 // watch starts a loop  with a periodic check of the DNS request
 // and it doesn't stop until it get a exit signal.
 func (ww *watchdogWorker) watch() {
-
 	ww.stopped = false
 	dnsClient := newDNSClient()
 
@@ -52,7 +51,6 @@ func (ww *watchdogWorker) watch() {
 			log.Debugf("Finished watchdog's worker(%s) interval check", ww)
 		}
 	}
-
 }
 
 // stop sends a message to exit channel so worker can exit its internal loop
@@ -109,7 +107,6 @@ func (w *watchdog) watch() {
 // exit its watch blocking function by sending another exit signal
 // in it's exit channel.
 func (w *watchdog) stop() {
-
 	log.Debug("Sending message to main watchdog's exit channel")
 	w.exit <- true
 

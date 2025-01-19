@@ -47,10 +47,10 @@ func (a *app) run() error {
 	}
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/live", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(200)
+		w.WriteHeader(http.StatusOK)
 	})
 	http.HandleFunc("/ready", func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(200)
+		w.WriteHeader(http.StatusOK)
 	})
 
 	// Start listening asynchronously

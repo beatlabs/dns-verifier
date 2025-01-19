@@ -179,7 +179,6 @@ func (d *dnsStream) constructQuery() *dns.Msg {
 // storing different answers based on type and also the response
 // code.
 func (d *dnsStream) parseResponse() {
-
 	switch d.response.rawResponse.Rcode {
 	case dns.RcodeSuccess:
 		d.response.code = NOERROR
@@ -218,7 +217,6 @@ func (d *dnsStream) parseResponse() {
 // is what user has set to be expected in terms of answers and response
 // code.
 func (d *dnsStream) isResponseLegit() bool {
-
 	// If we have expectations for RC check it against the expected one
 	if d.request.expectedResponseCode != nil {
 		if *d.request.expectedResponseCode != d.response.code {
