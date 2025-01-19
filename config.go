@@ -80,15 +80,12 @@ func (r *YamlRequest) getCleanRequest() (*dnsStream, error) {
 	return newDNSStream(dr, interval), nil
 }
 
-// Config holds all our configuration coming from user that our app needs
 type config struct {
 	appPort          int
 	logLevel         string
 	watchdogRequests []*dnsStream
 }
 
-// newConfig constructs and returns the struct that will host
-// all our configuration variables
 func newConfig() (*config, error) {
 	initViper()
 	r, err := getYamlConfig()

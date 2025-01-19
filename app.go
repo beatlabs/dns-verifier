@@ -43,7 +43,8 @@ func (a *app) run() error {
 	// Initialize HTTP server
 	hostPort := fmt.Sprintf(":%d", a.port)
 	server := &http.Server{
-		Addr: hostPort,
+		Addr:              hostPort,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/live", func(w http.ResponseWriter, _ *http.Request) {

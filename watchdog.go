@@ -7,7 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// watchdogWorker holds information for every watchdog worker
 type watchdogWorker struct {
 	dnsStream *dnsStream
 	exit      chan bool
@@ -15,7 +14,6 @@ type watchdogWorker struct {
 	ticker    *time.Ticker
 }
 
-// newWatchdog creates a watchdog worker struct
 func newWatchdogWorker(d *dnsStream) *watchdogWorker {
 	return &watchdogWorker{
 		dnsStream: d,
@@ -25,8 +23,6 @@ func newWatchdogWorker(d *dnsStream) *watchdogWorker {
 	}
 }
 
-// watch starts a loop  with a periodic check of the DNS request
-// and it doesn't stop until it get a exit signal.
 func (ww *watchdogWorker) watch() {
 	ww.stopped = false
 	dnsClient := newDNSClient()
@@ -53,7 +49,6 @@ func (ww *watchdogWorker) watch() {
 	}
 }
 
-// stop sends a message to exit channel so worker can exit its internal loop
 func (ww *watchdogWorker) stop() {
 	if ww.stopped {
 		log.Infof("Watchdog's worker(%s) already stopped", ww)
@@ -69,14 +64,11 @@ func (ww *watchdogWorker) String() string {
 	return fmt.Sprintf("Domain:<%s> - Query Type:<%s> - interval:<%d>", ww.dnsStream.request.domain, ww.dnsStream.request.queryType, ww.dnsStream.interval)
 }
 
-// watchdow is the struct that encapsulates information for the watchdog loop
-// that makes the DNS queries.
 type watchdog struct {
 	exit    chan bool
 	workers []*watchdogWorker
 }
 
-// newWatchdog creates a watchdog struct.
 func newWatchdog(requests []*dnsStream) *watchdog {
 	workers := []*watchdogWorker{}
 	for _, r := range requests {
@@ -90,8 +82,6 @@ func newWatchdog(requests []*dnsStream) *watchdog {
 	}
 }
 
-// watchdog starts all the workers that are needed in separate go routines
-// and waits forever for an exit signal
 func (w *watchdog) watch() {
 	for _, worker := range w.workers {
 		log.Info(w.workers)
@@ -103,9 +93,6 @@ func (w *watchdog) watch() {
 	log.Debug("Exiting watchdog watch function.")
 }
 
-// stop  is responsible to send exit signal to all workers and
-// exit its watch blocking function by sending another exit signal
-// in it's exit channel.
 func (w *watchdog) stop() {
 	log.Debug("Sending message to main watchdog's exit channel")
 	w.exit <- true
