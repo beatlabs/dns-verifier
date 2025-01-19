@@ -8,14 +8,13 @@ import (
 )
 
 var (
-	// Version of the tool that gets written during build time
+	// Version of the tool that gets written during build time.
 	Version = "dev"
-	// CommitHash of the code that get written during build time
+	// CommitHash of the code that get written during build time.
 	CommitHash = ""
 )
 
 func main() {
-
 	fmt.Printf("Starting DNS-verifier version:%s - commit hash:%s\n", Version, CommitHash)
 
 	cfg, err := newConfig()
@@ -32,12 +31,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "error:%v\n", err)
 		os.Exit(1)
 	}
-
 }
 
-// initLogging initiliazes our logging behaviour
 func initLogging(logLevel string) {
-
 	var l log.Level
 	switch logLevel {
 	case "DEBUG":

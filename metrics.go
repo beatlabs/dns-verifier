@@ -32,8 +32,6 @@ var (
 	)
 )
 
-// init initializes all our metrics, if we need to add
-// a new one we have to add it here as well.
 func init() {
 	prometheus.MustRegister(dnsVerificationStatus)
 	prometheus.MustRegister(dnsRequestsCounter)
@@ -41,20 +39,14 @@ func init() {
 	log.Info("Metrics setup - scrape /metrics")
 }
 
-// increaseRequestsCounter increases the counter metric for
-// the specified domain and qtype
 func increaseRequestsCounter(domain string, qtype string) {
 	dnsRequestsCounter.WithLabelValues(domain, qtype).Inc()
 }
 
-// updateRTTHistogram updates rtt histogram metric for the
-// given domain and qtype
 func updateRTTHistogram(domain, qtype string, rtt float64) {
 	dnsRTTHistogram.WithLabelValues(domain, qtype).Observe(rtt)
 }
 
-// updateGaugeVerificationStatus updates verification status metric
-// for the given domain, qtype
 func updateGaugeVerificationStatus(domain, qtype string, status float64) {
 	dnsVerificationStatus.WithLabelValues(domain, qtype).Set(status)
 }

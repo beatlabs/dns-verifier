@@ -10,16 +10,12 @@ import (
 )
 
 const (
-	// DefaultTimeout is default timeout for the DNS requests
+	// DefaultTimeout is default timeout for the DNS requests.
 	DefaultTimeout time.Duration = 5 * time.Second
 )
 
-// rCode is a new int type to encapsulate the different response code
-// in a more UX friendly way.
 type rCode int
 
-// rCode constants to represent response code in more
-// UX friendly way
 const (
 	NOERROR rCode = iota
 	NXDOMAIN
@@ -54,16 +50,12 @@ func newRCode(rc string) (rCode, error) {
 	return OTHER, fmt.Errorf("%s is not a supported response code", rc)
 }
 
-// dnsResponse holds all the information that
-// have to do with a DNS response
 type dnsResponse struct {
 	rawResponse *dns.Msg
 	code        rCode
 	answers     []string
 }
 
-// dnsRequest holds all infromation that have to do
-// with a DNS request and its expected answers
 type dnsRequest struct {
 	domain               string
 	queryType            string
@@ -72,9 +64,6 @@ type dnsRequest struct {
 	expectedResponseCode *rCode
 }
 
-// dnsStream encapsulates the info related with monitoring DNS
-// request and its response. Hence the stream in the name although
-// UDP is stream-less.
 type dnsStream struct {
 	request            dnsRequest
 	response           dnsResponse
@@ -83,7 +72,6 @@ type dnsStream struct {
 	verificationStatus float64
 }
 
-// newDNSStream constructs a new dnsStream struct
 func newDNSStream(r *dnsRequest, interval int) *dnsStream {
 	return &dnsStream{request: *r, rtt: 0, verificationStatus: 0, interval: interval}
 }
@@ -139,7 +127,7 @@ func (d *dnsStream) query(dnsClient dnsClientInterface) error {
 // first one that is in the resolv.conf of the system.
 func (d *dnsStream) constructResolver() (string, error) {
 	if d.request.resolver != nil {
-		return fmt.Sprintf("%s:53", *d.request.resolver), nil
+		return *d.request.resolver + ":53", nil
 	}
 
 	conf, err := dns.ClientConfigFromFile("/etc/resolv.conf")
@@ -179,7 +167,6 @@ func (d *dnsStream) constructQuery() *dns.Msg {
 // storing different answers based on type and also the response
 // code.
 func (d *dnsStream) parseResponse() {
-
 	switch d.response.rawResponse.Rcode {
 	case dns.RcodeSuccess:
 		d.response.code = NOERROR
@@ -218,7 +205,6 @@ func (d *dnsStream) parseResponse() {
 // is what user has set to be expected in terms of answers and response
 // code.
 func (d *dnsStream) isResponseLegit() bool {
-
 	// If we have expectations for RC check it against the expected one
 	if d.request.expectedResponseCode != nil {
 		if *d.request.expectedResponseCode != d.response.code {
@@ -240,8 +226,6 @@ func (d *dnsStream) isResponseLegit() bool {
 	return true
 }
 
-// areEqual is a helper function that provides us a way to
-// compare if two lists have the same elements regardless their order
 func areEqual(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
@@ -262,8 +246,6 @@ func areEqual(a, b []string) bool {
 	return true
 }
 
-// updateStats updates the prometheus stats for specific dnsStream struct
-// after we have gotten the DNS response
 func (d *dnsStream) updateStats() {
 	increaseRequestsCounter(d.request.domain, d.request.queryType)
 	updateRTTHistogram(d.request.domain, d.request.queryType, d.rtt.Seconds())

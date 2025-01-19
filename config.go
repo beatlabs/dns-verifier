@@ -32,7 +32,6 @@ func (r *YamlRequests) getCleanRequests() ([]*dnsStream, error) {
 			continue
 		}
 		cleanRequests = append(cleanRequests, c)
-
 	}
 	if len(cleanRequests) == 0 {
 		return []*dnsStream{}, errors.Errorf("No valid requests found inside the request sections coming from yaml config")
@@ -81,17 +80,13 @@ func (r *YamlRequest) getCleanRequest() (*dnsStream, error) {
 	return newDNSStream(dr, interval), nil
 }
 
-// Config holds all our configuration coming from user that our app needs
 type config struct {
 	appPort          int
 	logLevel         string
 	watchdogRequests []*dnsStream
 }
 
-// newConfig constructs and returns the struct that will host
-// all our configuration variables
 func newConfig() (*config, error) {
-
 	initViper()
 	r, err := getYamlConfig()
 	if err != nil {
@@ -138,7 +133,6 @@ func initViper() {
 // the funciton return a YamlRequests struct that contains all info from
 // the file.
 func getYamlConfig() (*YamlRequests, error) {
-
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, errors.Wrap(err, "Error reading config file")
 	}
