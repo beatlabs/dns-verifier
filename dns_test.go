@@ -131,7 +131,7 @@ func TestConstructQuery(t *testing.T) {
 			s := newDNSStream(dr, 100)
 			dm := s.constructQuery()
 			// we need recursion
-			assert.True(t, dm.MsgHdr.RecursionDesired)
+			assert.True(t, dm.MsgHdr.RecursionDesired) //nolint:staticcheck
 			// domain should fqdn
 			assert.Equal(t, tt.testDomain+".", dm.Question[0].Name)
 			// type should be A
