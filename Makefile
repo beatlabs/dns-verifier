@@ -3,7 +3,7 @@ VERSION=$(shell git describe --abbrev=0 --exact-match || echo development)
 GOBUILD_OPTS = -ldflags="-s -w -X main.Version=${VERSION} -X main.CommitHash=${COMMIT}"
 
 lint:
-	golangci-lint run --enable scopelint,bodyclose,gofmt,golint --exclude-use-default=false --modules-download-mode=vendor --build-tags integration
+	golangci-lint run -v
 
 modsync:
 	go mod tidy && go mod vendor
