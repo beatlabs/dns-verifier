@@ -17,36 +17,41 @@ const (
 type rCode int
 
 const (
-	NOERROR rCode = iota
-	NXDOMAIN
-	SERVFAIL
-	OTHER
+	NOERROR  rCode = 0
+	NXDOMAIN rCode = 1
+	SERVFAIL rCode = 2
+	OTHER    rCode = 3
 )
+
+var codeMap map[rCode]string = map[rCode]string{
+	NOERROR:  "NOERROR",
+	NXDOMAIN: "NXDOMAIN",
+	SERVFAIL: "SERVFAIL",
+	OTHER:    "OTHER",
+}
+
+var reverseCodeMap map[string]rCode = map[string]rCode{
+	"NOERROR":  NOERROR,
+	"NXDOMAIN": NXDOMAIN,
+	"SERVFAIL": SERVFAIL,
+	"OTHER":    OTHER,
+}
 
 // String pretty formats the rCode type when we
 // want to print it.
 func (r rCode) String() string {
-	rCodes := [...]string{"NOERROR", "NXDOMAIN", "SERVFAIL", "OTHER"}
-	if int(r) < 0 || int(r) > len(rCodes) {
-		return "OTHER"
+	if str, ok := codeMap[r]; ok {
+		return str
 	}
-	return rCodes[r]
+	return "OTHER"
 }
 
 // newRCode will return a new rCode instance based on the
 // given string representation.
 func newRCode(rc string) (rCode, error) {
-	switch rc {
-	case "NOERROR":
-		return NOERROR, nil
-	case "SERVFAIL":
-		return SERVFAIL, nil
-	case "NXDOMAIN":
-		return NXDOMAIN, nil
-	case "OTHER":
-		return OTHER, nil
+	if code, ok := reverseCodeMap[rc]; ok {
+		return code, nil
 	}
-
 	return OTHER, fmt.Errorf("%s is not a supported response code", rc)
 }
 
