@@ -23,14 +23,14 @@ const (
 	OTHER    rCode = 3
 )
 
-var codeMap map[rCode]string = map[rCode]string{
+var codeMap = map[rCode]string{
 	NOERROR:  "NOERROR",
 	NXDOMAIN: "NXDOMAIN",
 	SERVFAIL: "SERVFAIL",
 	OTHER:    "OTHER",
 }
 
-var reverseCodeMap map[string]rCode = map[string]rCode{
+var reverseCodeMap = map[string]rCode{
 	"NOERROR":  NOERROR,
 	"NXDOMAIN": NXDOMAIN,
 	"SERVFAIL": SERVFAIL,
