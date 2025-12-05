@@ -11,20 +11,53 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRcodeString(t *testing.T) {
-	r, _ := newRCode("NOERROR")
-	assert.Equal(t, "NOERROR", r.String())
+func TestRCode_String(t *testing.T) {
+	t.Parallel()
+	tests := map[string]struct {
+		input    rCode
+		expected string
+	}{
+		"NOERROR":       {NOERROR, "NOERROR"},
+		"NXDOMAIN":      {NXDOMAIN, "NXDOMAIN"},
+		"SERVFAIL":      {SERVFAIL, "SERVFAIL"},
+		"OTHER":         {OTHER, "OTHER"},
+		"Unknown rCode": {rCode(99), "OTHER"},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			assert.Equal(t, tt.expected, tt.input.String())
+		})
+	}
 }
 
-func TestNewRcode(t *testing.T) {
-	// Valid case
-	r, err := newRCode("NOERROR")
-	require.NoError(t, err)
-	assert.Equal(t, NOERROR, r)
-	// Invalid case
-	r, err = newRCode("TestValue")
-	require.Error(t, err)
-	assert.Equal(t, OTHER, r)
+func TestNewRCode_AllCases(t *testing.T) {
+	t.Parallel()
+	tests := map[string]struct {
+		input    string
+		expected rCode
+		wantErr  bool
+	}{
+		"Valid NOERROR":  {"NOERROR", NOERROR, false},
+		"Valid NXDOMAIN": {"NXDOMAIN", NXDOMAIN, false},
+		"Valid SERVFAIL": {"SERVFAIL", SERVFAIL, false},
+		"Valid OTHER":    {"OTHER", OTHER, false},
+		"Invalid value":  {"INVALID", OTHER, true},
+		"Empty string":   {"", OTHER, true},
+	}
+
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			rc, err := newRCode(tt.input)
+			if tt.wantErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+			assert.Equal(t, tt.expected, rc)
+		})
+	}
 }
 
 type dnsClientTest struct {
