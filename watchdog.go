@@ -70,7 +70,7 @@ type watchdog struct {
 }
 
 func newWatchdog(requests []*dnsStream) *watchdog {
-	workers := []*watchdogWorker{}
+	workers := make([]*watchdogWorker, 0, len(requests))
 	for _, r := range requests {
 		w := newWatchdogWorker(r)
 		workers = append(workers, w)
